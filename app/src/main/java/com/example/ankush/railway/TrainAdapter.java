@@ -74,7 +74,7 @@ public class TrainAdapter extends ArrayAdapter<Train>
                 Intent i = new Intent();
                 i.setClass(mContext, TrainStatusActivity.class);
                 i.putExtra(Constants.INTENT_TRAIN_DATE,mTrains.get(position).date);
-                i.putExtra(Constants.INTENT_TRAIN_NO,mTrains.get(position).number);
+                i.putExtra(Constants.INTENT_TRAIN,mTrains.get(position));
                 mContext.startActivity(i);
             }
         });

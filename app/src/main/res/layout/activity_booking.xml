@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="5dp"
             android:visibility="visible"
-            android:text="DEL"
+            android:text="Delhi"
             android:imeOptions="actionSearch"/>
     </LinearLayout>
     <LinearLayout
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="5dp"
             android:visibility="visible"
-            android:text="BOM"
+            android:text="Bombay"
             android:imeOptions="actionSearch"/>
     </LinearLayout>
     <LinearLayout

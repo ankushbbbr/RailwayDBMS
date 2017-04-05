@@ -9,6 +9,6 @@ public class Constants {
     public static final String INTENT_TRAIN_DEST_STATION_CODE = "train_dest_station";
     public static final String INTENT_TRAIN_DATE = "train_date";
     public static final String INTENT_TRAIN_NO = "train_number";
-
+    public static final String INTENT_TRAIN = "train";
 
 }

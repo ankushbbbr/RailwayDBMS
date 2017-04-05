@@ -45,13 +45,12 @@ public class TestActivity extends AppCompatActivity {
         try {
             SQLiteDatabase db = openHelper.getReadableDatabase();
             //Cursor c = db.query("student",null, null, null, null, null, null);
-            Cursor c = db.rawQuery("select * from train_status " +
-                    "where date = '20-04' and train_no = 13",null);
+            Cursor c = db.rawQuery("select * from train_status ",null);
             String output = "";
             while (c.moveToNext()) {
                 int no = c.getInt(c.getColumnIndex("train_no"));
                 String date = c.getString(c.getColumnIndex("date"));
-                output += no + "  " + date + "\n";
+                output += no + "  Date :" + date + "\n";
             }
             tv.setText(output);
         }catch (SQLiteCantOpenDatabaseException e){
