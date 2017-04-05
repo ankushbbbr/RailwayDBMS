@@ -5,9 +5,10 @@ package com.example.ankush.railway;
  */
 
 public class Person {
-    String name;
-    int age;
-    String gender;
+    public String name;
+    public int age;
+    public String gender;
+
 
     public Person(String name, int age, String gender) {
         this.name = name;

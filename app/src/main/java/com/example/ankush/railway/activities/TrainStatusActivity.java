@@ -29,6 +29,7 @@ public class TrainStatusActivity extends AppCompatActivity {
     Button bookButton;
     int avlAC,avlGen;
     Spinner spinner;
+    int pnr;
     String TAG = "TrainStatusTag";
     Train train;
     @Override
@@ -50,7 +51,7 @@ public class TrainStatusActivity extends AppCompatActivity {
                 if(isAC){
                     if(avlAC > 0){
                         Log.i(TAG, "ac booking");
-                        bookTicket(date,train);
+                        bookTicket(date,train,avlAC);
                         decrementACSeats(date,train);
                     }
                     else
@@ -68,7 +69,7 @@ public class TrainStatusActivity extends AppCompatActivity {
         });
     }
 
-    private void bookTicket(String date, Train train) {
+    private void bookTicket(String date, final Train train, final int seatno) {
         AlertDialog.Builder builder = new AlertDialog.Builder(TrainStatusActivity.this);
         builder.setTitle("Enter Details");
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_layout,null, false);
@@ -81,20 +82,91 @@ public class TrainStatusActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name,gender;
-                int age;
                 name = nameET.getText().toString();
+                String aget=ageET.getText().toString();
+                gender=genderET.getText().toString();
+                int age;
+                if(nameET.length()==0||genderET.length()==0||ageET.length()==0){
+                    Toast.makeText(getApplicationContext(),"Enter valid details",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                   // name = nameET.getText().toString();
+
                 age = Integer.parseInt(ageET.getText().toString());
-                gender = genderET.getText().toString();
-                Person person = new Person(name,age,gender);
-                addPassengerToDatabase(person);
-                dialog.dismiss();
+               // gender = genderET.getText().toString();
+
+                    Person person = new Person(name, age, gender);
+                    addPassengerToDatabase(person, train, seatno);
+                    dialog.dismiss();
+                    flash(person,train,pnr+1);
+                }
+
             }
         });
         builder.show();
 
     }
-    void addPassengerToDatabase(Person p){
+    void addPassengerToDatabase(Person p,Train train,int seatno){
+        DatabaseOpenHelper openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
+        SQLiteDatabase db = openHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * " +
+                "FROM passenger ",null);
+         pnr=c.getCount();
+        db = openHelper.getWritableDatabase();
 
+        ContentValues cv = new ContentValues();
+        //p.name();
+        String pass_name=p.name;
+        int pass_age=p.age;
+        String pass_gender=p.gender;
+        cv.put("p_name",pass_name);
+        cv.put("p_age",pass_age);
+        cv.put("p_gender",pass_gender);
+        cv.put("train_no",train.number);
+        cv.put("booked_date",train.departure_time);
+        cv.put("p_status","confirmed");
+        cv.put("seat_no",seatno);
+        cv.put("pnr",pnr+1);
+        db.insert("passenger",null,cv);
+        //flash(p,train,pnr+1);
+        Toast.makeText(TrainStatusActivity.this,"kkkk",Toast.LENGTH_SHORT).show();
+        openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
+        db = openHelper.getReadableDatabase();
+        c = db.rawQuery("SELECT * " +
+                "FROM passenger ",null);
+
+//        Cursor c = db.rawQuery("SELECT * FROM train WHERE source_id = ? and " +
+//                "destination_id = ?", new String[]{src,dest});
+        while (c.moveToNext()) {
+
+            String tName = c.getString(c.getColumnIndex("pnr"));
+            Log.i(TAG,tName);
+            Log.i(TAG,c.getString(c.getColumnIndex("p_name")));
+         //   Toast.makeText(TrainStatusActivity.this, tName, Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void flash(Person p,Train train,int pnrno){
+        AlertDialog.Builder builder = new AlertDialog.Builder(TrainStatusActivity.this);
+        builder.setTitle("Ticket Details");
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.ticket_and_pnr_details_layout,null, false);
+        TextView passname=(TextView)viewInflated.findViewById(R.id.pass_name);
+        TextView pnr=(TextView)viewInflated.findViewById(R.id.pnr);
+        TextView trainno=(TextView)viewInflated.findViewById(R.id.train_name);
+        TextView status=(TextView)viewInflated.findViewById(R.id.status);
+        TextView depdate=(TextView)viewInflated.findViewById(R.id.dep_date) ;
+        passname.setText(p.name);
+        pnr.setText(""+pnrno);
+        trainno.setText(""+train.number);
+        status.setText("Confirmed");
+        depdate.setText(train.departure_time);
+        builder.setView(viewInflated);
+        builder.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
     private void decrementGenSeats(String date, Train train) {
         DatabaseOpenHelper openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
@@ -110,7 +182,7 @@ public class TrainStatusActivity extends AppCompatActivity {
 
     void decrementACSeats(String date,Train train){
         DatabaseOpenHelper openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
-        SQLiteDatabase db = openHelper.getWritableDatabase();;
+        SQLiteDatabase db = openHelper.getWritableDatabase();
 //        db.rawQuery("UPDATE train_status " +
 //                "SET a_ac_seats = a_ac_seats - 1 " +
 //                "WHERE date = ? AND train_no = ?",new String[]{date,trainNo+""});
