@@ -116,7 +116,7 @@ public class TrainStatusActivity extends AppCompatActivity {
         SQLiteDatabase db = openHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * " +
                 "FROM passenger ",null);
-         pnr=c.getCount();
+        pnr=c.getCount();
         db = openHelper.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
@@ -158,7 +158,7 @@ public class TrainStatusActivity extends AppCompatActivity {
         pnr.setText(""+pnrno);
         trainno.setText(""+train.number);
         status.setText("Confirmed");
-        depdate.setText(train.departure_time);
+        depdate.setText(train.date+ " "+ train.departure_time);
         builder.setView(viewInflated);
         builder.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
             @Override

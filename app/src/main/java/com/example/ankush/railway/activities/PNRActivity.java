@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ankush.railway.DatabaseOpenHelper;
 import com.example.ankush.railway.Person;
@@ -54,7 +55,6 @@ public class PNRActivity extends AppCompatActivity {
                 "AND c.station_id = t.destination_id AND s.station_id=t.source_id", new String[]{"" + pnrNo});
 
         String t="";
-        Log.i(TAG,"hey  ");
         while(c.moveToNext()){
             String name= c.getString(c.getColumnIndex("p_name"));
             String trainName=c.getString(c.getColumnIndex("t_name"));
@@ -72,5 +72,7 @@ public class PNRActivity extends AppCompatActivity {
             pnrStatusTV.setText(t);
         }
         Log.i(TAG,t);
+        if(t.compareTo("")==0)
+            Toast.makeText(this, "PNR not found", Toast.LENGTH_SHORT).show();
     }
 }

@@ -16,8 +16,10 @@ import com.example.ankush.railway.R;
 
 import org.w3c.dom.Text;
 
+import java.util.concurrent.Semaphore;
+
 public class TestActivity extends AppCompatActivity {
-    Button add,view;
+    Button add,view,deleteButton;
     TextView tv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,15 @@ public class TestActivity extends AppCompatActivity {
         add = (Button) findViewById(R.id.button_add_test);
         view = (Button) findViewById(R.id.button_view_test);
         tv = (TextView) findViewById(R.id.textview_test);
+        deleteButton = (Button) findViewById(R.id.button_delete_database);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean f = TestActivity.this.deleteDatabase("rail.db");
+                if(f)
+                    Toast.makeText(TestActivity.this, "Delete successful", Toast.LENGTH_SHORT).show();
+            }
+        });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,23 +71,30 @@ public class TestActivity extends AppCompatActivity {
 
     private void addToDB() {
         DatabaseOpenHelper openHelper = new DatabaseOpenHelper(TestActivity.this);
-        SQLiteDatabase db = openHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        for(int i=1;i<=25;i++){
-            for(int j=1;j<30;j++){
-                cv.put("train_no",i);
-                String date;
-                if(j<10)
-                    date = "0"+j+"-04";
-                else
-                    date = j+"-04";
-                cv.put("date",date);
-                cv.put("ac_seats",200);
-                cv.put("gen_seats",500);
-                cv.put("a_ac_seats",200);
-                cv.put("a_gen_seats",500);
-                db.insert("train_status",null,cv);
+        final SQLiteDatabase db = openHelper.getWritableDatabase();
+        final ContentValues cv = new ContentValues();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                for(int i=1;i<=25;i++) {
+                    for (int j = 1; j < 30; j++) {
+                        cv.put("train_no", i);
+                        String date;
+                        if (j < 10)
+                            date = "0" + j + "-04";
+                        else
+                            date = j + "-04";
+                        cv.put("date", date);
+                        cv.put("ac_seats", 200);
+                        cv.put("gen_seats", 500);
+                        cv.put("a_ac_seats", 200);
+                        cv.put("a_gen_seats", 500);
+                        db.insert("train_status", null, cv);
+                    }
+                }
+                //Toast.makeText(TestActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();
             }
-        }
+        };
+        thread.start();
     }
 }

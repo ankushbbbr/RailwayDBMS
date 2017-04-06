@@ -18,7 +18,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
-            android:id="@+id/edittext_user_name"/>
+            android:id="@+id/edittext_user_name"
+            android:inputType="textCapWords"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +36,8 @@
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:id="@+id/edittext_user_gender"
-            android:hint="M/F"/>
+            android:hint="M/F"
+            android:inputType="textCapCharacters"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,6 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
-            android:id="@+id/edittext_user_age"/>
+            android:id="@+id/edittext_user_age"
+            android:inputType="number"/>
     </LinearLayout>
 </LinearLayout>
