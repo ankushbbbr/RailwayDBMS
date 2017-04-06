@@ -42,8 +42,6 @@ public class TrainListActivity extends AppCompatActivity {
         fetchTrainsFromDatabase(src_train,dest_train,date);
     }
     void fetchTrainsFromDatabase(String src,String dest,String date){
-        //DatabaseOpenHelper db = new DatabaseOpenHelper(TrainListActivity.this);
-        //db.ge
         DatabaseOpenHelper openHelper = new DatabaseOpenHelper(TrainListActivity.this);
         SQLiteDatabase db = openHelper.getReadableDatabase();
 //        Cursor c = db.rawQuery("SELECT * FROM train WHERE source_id = ? and " +

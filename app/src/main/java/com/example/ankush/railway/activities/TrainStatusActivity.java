@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -32,6 +31,7 @@ public class TrainStatusActivity extends AppCompatActivity {
     int pnr;
     String TAG = "TrainStatusTag";
     Train train;
+    boolean bookTicketFlag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,9 @@ public class TrainStatusActivity extends AppCompatActivity {
                     if(avlAC > 0){
                         Log.i(TAG, "ac booking");
                         bookTicket(date,train,avlAC);
-                        decrementACSeats(date,train);
+                        if(bookTicketFlag)
+                            decrementACSeats(date,train);
+                        bookTicketFlag = false;
                     }
                     else
                         Toast.makeText(TrainStatusActivity.this, "Seats Full!", Toast.LENGTH_SHORT).show();
@@ -60,7 +62,10 @@ public class TrainStatusActivity extends AppCompatActivity {
                 else{
                     if(avlGen > 0){
                         Log.i(TAG, "gen booking");
-                        decrementGenSeats(date,train);
+                        bookTicket(date,train,avlGen);
+                        if(bookTicketFlag)
+                            decrementGenSeats(date,train);
+                        bookTicketFlag = false;
                     }
                     else
                         Toast.makeText(TrainStatusActivity.this, "Seats Full!", Toast.LENGTH_SHORT).show();
@@ -90,17 +95,17 @@ public class TrainStatusActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Enter valid details",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                   // name = nameET.getText().toString();
-
-                age = Integer.parseInt(ageET.getText().toString());
-               // gender = genderET.getText().toString();
-
-                    Person person = new Person(name, age, gender);
-                    addPassengerToDatabase(person, train, seatno);
-                    dialog.dismiss();
-                    flash(person,train,pnr+1);
+                    try {
+                        age = Integer.parseInt(ageET.getText().toString());
+                        Person person = new Person(name, age, gender);
+                        addPassengerToDatabase(person, train, seatno);
+                        dialog.dismiss();
+                        flash(person, train, pnr + 1);
+                        bookTicketFlag = true;
+                    }catch (NumberFormatException e){
+                        Toast.makeText(getApplicationContext(),"Enter valid age",Toast.LENGTH_SHORT).show();
+                    }
                 }
-
             }
         });
         builder.show();
@@ -115,7 +120,6 @@ public class TrainStatusActivity extends AppCompatActivity {
         db = openHelper.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        //p.name();
         String pass_name=p.name;
         int pass_age=p.age;
         String pass_gender=p.gender;
@@ -128,21 +132,17 @@ public class TrainStatusActivity extends AppCompatActivity {
         cv.put("seat_no",seatno);
         cv.put("pnr",pnr+1);
         db.insert("passenger",null,cv);
-        //flash(p,train,pnr+1);
         Toast.makeText(TrainStatusActivity.this,"kkkk",Toast.LENGTH_SHORT).show();
         openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
         db = openHelper.getReadableDatabase();
         c = db.rawQuery("SELECT * " +
                 "FROM passenger ",null);
 
-//        Cursor c = db.rawQuery("SELECT * FROM train WHERE source_id = ? and " +
-//                "destination_id = ?", new String[]{src,dest});
         while (c.moveToNext()) {
 
             String tName = c.getString(c.getColumnIndex("pnr"));
             Log.i(TAG,tName);
             Log.i(TAG,c.getString(c.getColumnIndex("p_name")));
-         //   Toast.makeText(TrainStatusActivity.this, tName, Toast.LENGTH_SHORT).show();
         }
     }
     private void flash(Person p,Train train,int pnrno){

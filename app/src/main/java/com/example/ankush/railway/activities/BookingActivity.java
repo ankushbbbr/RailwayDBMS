@@ -86,9 +86,5 @@ public class BookingActivity extends AppCompatActivity {
             return;
         }
         startActivity(intent);
-//                int size= srcAutoTvTrain.getAdapter().getCount();
-//                Log.i(TAG,""+ size);
-//                if(size>0)
-//                Log.i(TAG, ""+ srcAutoTvTrain.getAdapter().getItem(size-1));
     }
 }
