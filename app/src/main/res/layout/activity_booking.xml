@@ -22,7 +22,7 @@
             android:textSize="25dp"
             android:gravity="center"/>
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/from_edittext"
             android:inputType="textCapSentences"
             android:layout_width="0dp"
@@ -30,7 +30,6 @@
             android:layout_height="wrap_content"
             android:paddingRight="5dp"
             android:visibility="visible"
-            android:text="Delhi"
             android:imeOptions="actionSearch"/>
     </LinearLayout>
     <LinearLayout
@@ -45,7 +44,7 @@
             android:textSize="25dp"
             android:gravity="center"/>
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/to_edittext"
             android:inputType="textCapSentences"
             android:layout_width="0dp"
@@ -53,7 +52,6 @@
             android:layout_height="wrap_content"
             android:paddingRight="5dp"
             android:visibility="visible"
-            android:text="Bombay"
             android:imeOptions="actionSearch"/>
     </LinearLayout>
     <LinearLayout

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -14,18 +16,26 @@ import com.example.ankush.railway.Constants;
 import com.example.ankush.railway.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class BookingActivity extends AppCompatActivity {
-    EditText dateEditText,srcEditText,destEditText;
+    EditText dateEditText;
     Button searchButton;
     Calendar myCalendar;
+    AutoCompleteTextView srcAutoTV,destAutoTV;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
         findViews();
+        String[] stations = new String[]{"Delhi","Bombay","Kolkata","Chennai"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.autocomplete, stations);
+        srcAutoTV.setAdapter(adapter);
+        destAutoTV.setAdapter(adapter);
+
         myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -59,19 +69,18 @@ public class BookingActivity extends AppCompatActivity {
     private void findViews(){
         dateEditText = (EditText)findViewById(R.id.date_edittext_booking_activity);
         searchButton= (Button)findViewById(R.id.button_search);
-        srcEditText= (EditText) findViewById(R.id.from_edittext);
-        destEditText=(EditText) findViewById(R.id.to_edittext);
+        srcAutoTV= (AutoCompleteTextView) findViewById(R.id.from_edittext);
+        destAutoTV=(AutoCompleteTextView) findViewById(R.id.to_edittext);
     }
     private void updateLabel() {
-
         String myFormat = "dd-MM";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         dateEditText.setText(sdf.format(myCalendar.getTime()));
     }
     private void doSearch(){
-        String src_train= srcEditText.getText().toString();
-        String dest_train= destEditText.getText().toString();
+        String src_train= srcAutoTV.getText().toString();
+        String dest_train= destAutoTV.getText().toString();
         String date=dateEditText.getText().toString();
 
         Intent intent = new Intent();
