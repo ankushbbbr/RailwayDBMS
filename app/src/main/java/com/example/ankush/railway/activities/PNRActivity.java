@@ -65,13 +65,12 @@ public class PNRActivity extends AppCompatActivity {
             String dest = c.getString(c.getColumnIndex("dest_name"));
             t = "Passenger Name: "+name+"\n"+
                     "Train name:"+trainName+"\n"+
-                    "From           :"+src+"\n"+
-                    "To             :"+dest+"\n"+
+                    "From        :"+src+"\n"+
+                    "To          :"+dest+"\n"+
                     "Seat No        :"+seatNo+"\n"+
                     "Booked Date    :"+bookedDate;
-            pnrStatusTV.setText(t);
         }
-        Log.i(TAG,t);
+        pnrStatusTV.setText(t);
         if(t.compareTo("")==0)
             Toast.makeText(this, "PNR not found", Toast.LENGTH_SHORT).show();
     }

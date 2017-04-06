@@ -125,12 +125,11 @@ public class TrainStatusActivity extends AppCompatActivity {
         cv.put("p_age",pass_age);
         cv.put("p_gender",pass_gender);
         cv.put("train_no",train.number);
-        cv.put("booked_date",train.departure_time);
+        cv.put("booked_date",train.date);
         cv.put("p_status","confirmed");
         cv.put("seat_no",seatNo);
         cv.put("pnr",pnr+1);
         db.insert("passenger",null,cv);
-        Toast.makeText(TrainStatusActivity.this,"kkkk",Toast.LENGTH_SHORT).show();
         openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
         db = openHelper.getReadableDatabase();
         c = db.rawQuery("SELECT * " +
@@ -153,9 +152,9 @@ public class TrainStatusActivity extends AppCompatActivity {
         TextView depdate=(TextView)viewInflated.findViewById(R.id.dep_date) ;
         passname.setText(p.name);
         pnr.setText(""+pnrNo);
-        trainno.setText(""+train.number);
+        trainno.setText(""+train.name);
         status.setText("Confirmed");
-        depdate.setText(train.date+ " "+ train.departure_time);
+        depdate.setText(train.date+ ", "+ train.departure_time);
         builder.setView(viewInflated);
         builder.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
             @Override
