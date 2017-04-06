@@ -31,7 +31,6 @@ public class TrainStatusActivity extends AppCompatActivity {
     int pnr;
     String TAG = "TrainStatusTag";
     Train train;
-    boolean bookTicketFlag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +50,7 @@ public class TrainStatusActivity extends AppCompatActivity {
                 if(isAC){
                     if(avlAC > 0){
                         Log.i(TAG, "ac booking");
-                        bookTicket(date,train,avlAC);
-                        if(bookTicketFlag)
-                            decrementACSeats(date,train);
-                        bookTicketFlag = false;
+                        bookTicket(date,train,avlAC,Train.TRAIN_SEAT_TYPE_AC);
                     }
                     else
                         Toast.makeText(TrainStatusActivity.this, "Seats Full!", Toast.LENGTH_SHORT).show();
@@ -62,10 +58,7 @@ public class TrainStatusActivity extends AppCompatActivity {
                 else{
                     if(avlGen > 0){
                         Log.i(TAG, "gen booking");
-                        bookTicket(date,train,avlGen);
-                        if(bookTicketFlag)
-                            decrementGenSeats(date,train);
-                        bookTicketFlag = false;
+                        bookTicket(date,train,avlGen,Train.TRAIN_SEAT_TYPE_GEN);
                     }
                     else
                         Toast.makeText(TrainStatusActivity.this, "Seats Full!", Toast.LENGTH_SHORT).show();
@@ -74,7 +67,7 @@ public class TrainStatusActivity extends AppCompatActivity {
         });
     }
 
-    private void bookTicket(String date, final Train train, final int seatno) {
+    private void bookTicket(final String date, final Train train, final int seatNo,final int type) {
         AlertDialog.Builder builder = new AlertDialog.Builder(TrainStatusActivity.this);
         builder.setTitle("Enter Details");
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_layout,null, false);
@@ -96,12 +89,17 @@ public class TrainStatusActivity extends AppCompatActivity {
                 }
                 else{
                     try {
-                        age = Integer.parseInt(ageET.getText().toString());
+                        age = Integer.parseInt(aget);
                         Person person = new Person(name, age, gender);
-                        addPassengerToDatabase(person, train, seatno);
+                        addPassengerToDatabase(person, train, seatNo);
                         dialog.dismiss();
                         flash(person, train, pnr + 1);
-                        bookTicketFlag = true;
+                        if(type == Train.TRAIN_SEAT_TYPE_AC){
+                            decrementACSeats(date,train);
+                        }
+                        else if(type == Train.TRAIN_SEAT_TYPE_GEN){
+                            decrementGenSeats(date, train);
+                        }
                     }catch (NumberFormatException e){
                         Toast.makeText(getApplicationContext(),"Enter valid age",Toast.LENGTH_SHORT).show();
                     }
@@ -111,7 +109,7 @@ public class TrainStatusActivity extends AppCompatActivity {
         builder.show();
 
     }
-    void addPassengerToDatabase(Person p,Train train,int seatno){
+    void addPassengerToDatabase(Person p,Train train,int seatNo){
         DatabaseOpenHelper openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
         SQLiteDatabase db = openHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * " +
@@ -129,7 +127,7 @@ public class TrainStatusActivity extends AppCompatActivity {
         cv.put("train_no",train.number);
         cv.put("booked_date",train.departure_time);
         cv.put("p_status","confirmed");
-        cv.put("seat_no",seatno);
+        cv.put("seat_no",seatNo);
         cv.put("pnr",pnr+1);
         db.insert("passenger",null,cv);
         Toast.makeText(TrainStatusActivity.this,"kkkk",Toast.LENGTH_SHORT).show();
@@ -139,13 +137,12 @@ public class TrainStatusActivity extends AppCompatActivity {
                 "FROM passenger ",null);
 
         while (c.moveToNext()) {
-
             String tName = c.getString(c.getColumnIndex("pnr"));
             Log.i(TAG,tName);
             Log.i(TAG,c.getString(c.getColumnIndex("p_name")));
         }
     }
-    private void flash(Person p,Train train,int pnrno){
+    private void flash(Person p,Train train,int pnrNo){
         AlertDialog.Builder builder = new AlertDialog.Builder(TrainStatusActivity.this);
         builder.setTitle("Ticket Details");
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.ticket_and_pnr_details_layout,null, false);
@@ -155,7 +152,7 @@ public class TrainStatusActivity extends AppCompatActivity {
         TextView status=(TextView)viewInflated.findViewById(R.id.status);
         TextView depdate=(TextView)viewInflated.findViewById(R.id.dep_date) ;
         passname.setText(p.name);
-        pnr.setText(""+pnrno);
+        pnr.setText(""+pnrNo);
         trainno.setText(""+train.number);
         status.setText("Confirmed");
         depdate.setText(train.date+ " "+ train.departure_time);

@@ -8,6 +8,9 @@ import java.util.ArrayList;
  */
 
 public class Train implements Serializable{
+    public static final int TRAIN_SEAT_TYPE_AC = 1;
+    public static final int TRAIN_SEAT_TYPE_GEN = 2;
+
     public String name;
     public int number;
     public String src;
