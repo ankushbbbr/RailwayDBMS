@@ -63,12 +63,12 @@ public class PNRActivity extends AppCompatActivity {
 
             String src = c.getString(c.getColumnIndex("src_name"));
             String dest = c.getString(c.getColumnIndex("dest_name"));
-            t = "Passenger Name: "+name+"\n"+
-                    "Train name:"+trainName+"\n"+
-                    "From        :"+src+"\n"+
-                    "To          :"+dest+"\n"+
-                    "Seat No        :"+seatNo+"\n"+
-                    "Booked Date    :"+bookedDate;
+            t =     "Passenger Name: "+name+"\n"+
+                    "Train Name    : "+trainName+"\n"+
+                    "From          : "+src+"\n"+
+                    "To            : "+dest+"\n"+
+                    "Seat No       : "+seatNo+"\n"+
+                    "Booked Date   : "+bookedDate;
         }
         pnrStatusTV.setText(t);
         if(t.compareTo("")==0)

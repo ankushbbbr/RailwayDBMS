@@ -110,11 +110,13 @@ public class TrainStatusActivity extends AppCompatActivity {
 
     }
     void addPassengerToDatabase(Person p,Train train,int seatNo){
+
         DatabaseOpenHelper openHelper = new DatabaseOpenHelper(TrainStatusActivity.this);
         SQLiteDatabase db = openHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * " +
                 "FROM passenger ",null);
         pnr=c.getCount();
+        Log.i(TAG,pnr+"");
         db = openHelper.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
